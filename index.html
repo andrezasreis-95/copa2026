@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>⚽ Copa do Mundo 2026 — Guia Cultural</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Nunito',sans-serif;background:#f4fff7}#root{min-height:100vh}</style>
+</head>
+<body>
+<div id="root"><div style="display:flex;align-items:center;justify-content:center;height:100vh;font-size:48px">⚽</div></div>
+<script type="text/babel">
+const {useState,useCallback,useEffect}=React;
+
+const COUNTRIES=[
+  {name:"Brasil",flag:"🇧🇷",ct:"América do Sul",iso:"br"},
+  {name:"Argentina",flag:"🇦🇷",ct:"América do Sul",iso:"ar"},
+  {name:"Uruguai",flag:"🇺🇾",ct:"América do Sul",iso:"uy"},
+  {name:"Colômbia",flag:"🇨🇴",ct:"América do Sul",iso:"co"},
+  {name:"Equador",flag:"🇪🇨",ct:"América do Sul",iso:"ec"},
+  {name:"Paraguai",flag:"🇵🇾",ct:"América do Sul",iso:"py"},
+  {name:"Estados Unidos",flag:"🇺🇸",ct:"CONCACAF",iso:"us"},
+  {name:"Canadá",flag:"🇨🇦",ct:"CONCACAF",iso:"ca"},
+  {name:"México",flag:"🇲🇽",ct:"CONCACAF",iso:"mx"},
+  {name:"Panamá",flag:"🇵🇦",ct:"CONCACAF",iso:"pa"},
+  {name:"Haiti",flag:"🇭🇹",ct:"CONCACAF",iso:"ht"},
+  {name:"Curaçao",flag:"🇨🇼",ct:"CONCACAF",iso:"cw"},
+  {name:"França",flag:"🇫🇷",ct:"Europa",iso:"fr"},
+  {name:"Espanha",flag:"🇪🇸",ct:"Europa",iso:"es"},
+  {name:"Alemanha",flag:"🇩🇪",ct:"Europa",iso:"de"},
+  {name:"Portugal",flag:"🇵🇹",ct:"Europa",iso:"pt"},
+  {name:"Inglaterra",flag:"🏴󠁧󠁢󠁥󠁮󠁧󠁿",ct:"Europa",iso:"gb-eng"},
+  {name:"Holanda",flag:"🇳🇱",ct:"Europa",iso:"nl"},
+  {name:"Bélgica",flag:"🇧🇪",ct:"Europa",iso:"be"},
+  {name:"Croácia",flag:"🇭🇷",ct:"Europa",iso:"hr"},
+  {name:"Suíça",flag:"🇨🇭",ct:"Europa",iso:"ch"},
+  {name:"Áustria",flag:"🇦🇹",ct:"Europa",iso:"at"},
+  {name:"Noruega",flag:"🇳🇴",ct:"Europa",iso:"no"},
+  {name:"Escócia",flag:"🏴󠁧󠁢󠁳󠁣󠁴󠁿",ct:"Europa",iso:"gb-sct"},
+  {name:"Suécia",flag:"🇸🇪",ct:"Europa",iso:"se"},
+  {name:"Turquia",flag:"🇹🇷",ct:"Europa",iso:"tr"},
+  {name:"Rep. Tcheca",flag:"🇨🇿",ct:"Europa",iso:"cz"},
+  {name:"Bósnia",flag:"🇧🇦",ct:"Europa",iso:"ba"},
+  {name:"Marrocos",flag:"🇲🇦",ct:"África",iso:"ma"},
+  {name:"Senegal",flag:"🇸🇳",ct:"África",iso:"sn"},
+  {name:"Egito",flag:"🇪🇬",ct:"África",iso:"eg"},
+  {name:"Argélia",flag:"🇩🇿",ct:"África",iso:"dz"},
+  {name:"Costa do Marfim",flag:"🇨🇮",ct:"África",iso:"ci"},
+  {name:"Gana",flag:"🇬🇭",ct:"África",iso:"gh"},
+  {name:"Tunísia",flag:"🇹🇳",ct:"África",iso:"tn"},
+  {name:"África do Sul",flag:"🇿🇦",ct:"África",iso:"za"},
+  {name:"Cabo Verde",flag:"🇨🇻",ct:"África",iso:"cv"},
+  {name:"RD Congo",flag:"🇨🇩",ct:"África",iso:"cd"},
+  {name:"Japão",flag:"🇯🇵",ct:"Ásia/Oceania",iso:"jp"},
+  {name:"Coreia do Sul",flag:"🇰🇷",ct:"Ásia/Oceania",iso:"kr"},
+  {name:"Irã",flag:"🇮🇷",ct:"Ásia/Oceania",iso:"ir"},
+  {name:"Arábia Saudita",flag:"🇸🇦",ct:"Ásia/Oceania",iso:"sa"},
+  {name:"Catar",flag:"🇶🇦",ct:"Ásia/Oceania",iso:"qa"},
+  {name:"Austrália",flag:"🇦🇺",ct:"Ásia/Oceania",iso:"au"},
+  {name:"Uzbequistão",flag:"🇺🇿",ct:"Ásia/Oceania",iso:"uz"},
+  {name:"Jordânia",flag:"🇯🇴",ct:"Ásia/Oceania",iso:"jo"},
+  {name:"Iraque",flag:"🇮🇶",ct:"Ásia/Oceania",iso:"iq"},
+  {name:"Nova Zelândia",flag:"🇳🇿",ct:"Ásia/Oceania",iso:"nz"},
+];
+const CONTINENTS=["Todos","América do Sul","CONCACAF","Europa","África","Ásia/Oceania"];
+const CE={"Todos":"🌍","América do Sul":"🌎","CONCACAF":"🌎","Europa":"🌍","África":"🌍","Ásia/Oceania":"🌏"};
+const CC={"América do Sul":"#27ae60","CONCACAF":"#e74c3c","Europa":"#2980b9","África":"#e67e22","Ásia/Oceania":"#8e44ad"};
+const CATS=[
+  {k:"linguas",  label:"Como falam?",   icon:"🗣️",bg:"#e0faf8",border:"#4ecdc4",tc:"#0e8078"},
+  {k:"comidas",  label:"O que comem?",  icon:"🍽️",bg:"#fff0f0",border:"#ff6b6b",tc:"#c0392b"},
+  {k:"musicas",  label:"Que música!🎶", icon:"🎵",bg:"#f0eeff",border:"#a29bfe",tc:"#5f27cd"},
+  {k:"costumes", label:"Tradições 🎊",  icon:"🎭",bg:"#fffbea",border:"#ffd32a",tc:"#c47a00"},
+  {k:"curiosidade",label:"🌟 Você sabia?",icon:"⭐",bg:"#e8fdf2",border:"#00b894",tc:"#007a5e",full:true},
+];
+const IMG_FIELDS=[
+  {key:"country", icon:"🌍",label:"O País"},
+  {key:"landmark",icon:"🗼",label:"Ponto Famoso"},
+  {key:"food1",   icon:"🍽️",label:"Comida 1"},
+  {key:"food2",   icon:"🍰",label:"Comida 2"},
+  {key:"music",   icon:"🎵",label:"Música / Dança"},
+];
+const IMG_PH={
+  country:{bg:"#d5f5e3",icon:"🌍"},landmark:{bg:"#d6eaf8",icon:"🗼"},
+  food1:{bg:"#fde8d8",icon:"🍽️"},food2:{bg:"#fce5cd",icon:"🍰"},music:{bg:"#e8daef",icon:"🎵"},
+};
+const MKEY="copa2026-media";
+const cache={};
+
+function tw(iso){
+  if(iso==="gb-eng")return"1f3f4-e0067-e0062-e0065-e006e-e0067-e007f";
+  if(iso==="gb-sct")return"1f3f4-e0067-e0062-e0073-e0063-e0074-e007f";
+  return iso.toUpperCase().split("").map(c=>(0x1F1E6+c.charCodeAt(0)-65).toString(16)).join("-");
+}
+async function wikiImg(t){
+  if(!t)return null;
+  try{
+    const r=await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(t)}&prop=pageimages&format=json&pithumbsize=800&origin=*`);
+    const d=await r.json();
+    return Object.values(d.query.pages)[0]?.thumbnail?.source||null;
+  }catch{return null;}
+}
+function exVid(raw){
+  if(!raw)return"";
+  const t=raw.trim();
+  if(/^[a-zA-Z0-9_-]{11}$/.test(t))return t;
+  const m=t.match(/(?:v=|youtu\.be\/|\/embed\/)([a-zA-Z0-9_-]{11})/);
+  return m?m[1]:"";
+}
+
+/* ── Setup ── */
+function SetupScreen({onReady}){
+  const[k,setK]=useState('');
+  const[e,setE]=useState('');
+  return(
+    <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',
+      background:'linear-gradient(135deg,#0d5c2a,#27ae60)',padding:20}}>
+      <div style={{background:'#fff',borderRadius:24,padding:32,maxWidth:400,width:'100%',
+        border:'3px solid #ffd700',boxShadow:'0 8px 32px #0003',textAlign:'center'}}>
+        <div style={{fontSize:52,marginBottom:10}}>⚽</div>
+        <h1 style={{fontFamily:"'Fredoka One',cursive",fontSize:22,color:'#0d5c2a',marginBottom:8}}>
+          Copa do Mundo 2026
+        </h1>
+        <p style={{fontSize:13,color:'#666',marginBottom:18,fontWeight:700,lineHeight:1.6}}>
+          Insira sua chave da API Anthropic.<br/>
+          Ela fica salva no navegador.
+        </p>
+        <input value={k} onChange={ev=>setK(ev.target.value)}
+          onKeyDown={ev=>ev.key==='Enter'&&(k.trim()?onReady(k.trim()):setE('Insira a chave.'))}
+          placeholder="sk-ant-..." type="password"
+          style={{width:'100%',padding:'10px 14px',border:'2px solid #ddd',borderRadius:12,
+            fontSize:13,outline:'none',fontFamily:'monospace',marginBottom:8}}/>
+        {e&&<p style={{color:'#e74c3c',fontSize:12,fontWeight:700,marginBottom:8}}>{e}</p>}
+        <button onClick={()=>k.trim()?onReady(k.trim()):setE('Insira a chave.')}
+          style={{width:'100%',padding:'12px',background:'#0d5c2a',color:'#ffd700',border:'none',
+            borderRadius:14,fontFamily:"'Fredoka One',cursive",fontSize:18,cursor:'pointer'}}>
+          Entrar →
+        </button>
+        <p style={{fontSize:11,color:'#aaa',marginTop:12}}>
+          Obtenha sua chave em{' '}
+          <a href="https://console.anthropic.com" target="_blank" style={{color:'#27ae60'}}>
+            console.anthropic.com
+          </a>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* ── Components ── */
+function FlagImg({iso,name,color}){
+  const[err,setErr]=useState(false);
+  if(err)return(
+    <div style={{height:60,display:'flex',alignItems:'center',justifyContent:'center',
+      background:color+'22',fontFamily:"'Fredoka One',cursive",fontSize:13,fontWeight:900,color,letterSpacing:2}}>
+      {name.slice(0,3).toUpperCase()}
+    </div>
+  );
+  return<img src={`https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/${tw(iso)}.svg`}
+    alt={name} onError={()=>setErr(true)}
+    style={{width:'100%',height:60,objectFit:'contain',display:'block',background:'#f8fafb',padding:3}}/>;
+}
+
+function MediaImg({src,manualSrc,label,ph,h=100}){
+  const[aF,setAF]=useState(false);
+  const[mF,setMF]=useState(false);
+  useEffect(()=>setAF(false),[src]);
+  useEffect(()=>setMF(false),[manualSrc]);
+  const active=(manualSrc&&!mF)?manualSrc:(src&&!aF?src:null);
+  const onErr=()=>manualSrc&&!mF?setMF(true):setAF(true);
+  return(
+    <div style={{borderRadius:12,overflow:'hidden',border:'2px solid #e8e8e8',background:'#fafafa'}}>
+      {active
+        ?<img src={active} alt={label} onError={onErr}
+            style={{width:'100%',height:h,objectFit:'cover',display:'block'}}/>
+        :<div style={{width:'100%',height:h,background:ph.bg,display:'flex',
+            alignItems:'center',justifyContent:'center',fontSize:h>90?38:26}}>{ph.icon}</div>}
+      <div style={{fontSize:10,fontWeight:800,color:'#888',textAlign:'center',
+        padding:'4px 3px',background:'#fff',letterSpacing:'0.03em'}}>{label}</div>
+    </div>
+  );
+}
+
+function SecImg({url}){
+  const[f,setF]=useState(false);
+  useEffect(()=>setF(false),[url]);
+  if(!url||f)return null;
+  return<img src={url} alt="" onError={()=>setF(true)}
+    style={{width:'100%',borderRadius:9,marginTop:8,objectFit:'cover',maxHeight:130,display:'block'}}/>;
+}
+
+function VideoCard({videoId,name}){
+  const[exp,setExp]=useState(false);
+  const[err,setErr]=useState(false);
+  useEffect(()=>{setExp(false);setErr(false);},[videoId]);
+  const su=`https://www.youtube.com/results?search_query=${encodeURIComponent(name+' cultura crianças')}`;
+  if(!videoId||err)return(
+    <a href={su} target="_blank" rel="noopener noreferrer"
+      style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,padding:'14px',
+        background:'#fff5f5',borderRadius:14,border:'2.5px solid #ff6b6b',color:'#c0392b',
+        fontWeight:800,fontSize:13,textDecoration:'none',fontFamily:'Nunito,sans-serif'}}>
+      ▶️ Buscar vídeos sobre {name} no YouTube
+    </a>
+  );
+  if(exp)return(
+    <div style={{position:'relative',paddingTop:'52%',borderRadius:14,overflow:'hidden',background:'#000'}}>
+      <iframe src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`}
+        style={{position:'absolute',top:0,left:0,width:'100%',height:'100%',border:'none'}}
+        allowFullScreen allow="autoplay;encrypted-media;picture-in-picture"/>
+    </div>
+  );
+  return(
+    <div onClick={()=>setExp(true)}
+      style={{position:'relative',cursor:'pointer',borderRadius:14,overflow:'hidden',
+        background:'#000',boxShadow:'0 4px 16px #0003'}}>
+      <img src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`} alt="vídeo"
+        onError={()=>setErr(true)} style={{width:'100%',display:'block',opacity:.9}}/>
+      <div style={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)',
+        background:'rgba(220,0,0,.9)',borderRadius:'50%',width:62,height:62,display:'flex',
+        alignItems:'center',justifyContent:'center',fontSize:26,color:'#fff',paddingLeft:4,
+        boxShadow:'0 4px 20px #0006'}}>▶</div>
+      <div style={{position:'absolute',bottom:0,left:0,right:0,padding:'8px 12px',
+        background:'linear-gradient(transparent,rgba(0,0,0,.85))',color:'#fff',
+        fontSize:12,fontWeight:800,fontFamily:'Nunito,sans-serif'}}>📺 Toque para assistir!</div>
+    </div>
+  );
+}
+
+/* ── Settings ── */
+const SD=({c})=>(
+  <div style={{fontFamily:"'Fredoka One',cursive",fontSize:13,color:'#1e6b3a',
+    padding:'7px 10px',background:'#eafaf1',borderRadius:8,margin:'14px 0 10px',
+    display:'flex',alignItems:'center',gap:6}}>{c}</div>
+);
+
+function ImgField({icon,label,value,onChange}){
+  const[pf,setPf]=useState(false);
+  useEffect(()=>setPf(false),[value]);
+  return(
+    <div style={{marginBottom:10}}>
+      <div style={{fontSize:11,fontWeight:800,color:'#555',marginBottom:4,display:'flex',gap:5,alignItems:'center'}}>
+        <span>{icon}</span>{label}
+      </div>
+      <div style={{display:'flex',gap:7,alignItems:'flex-start'}}>
+        <input value={value} onChange={e=>onChange(e.target.value)} placeholder="Cole a URL da imagem…"
+          style={{flex:1,fontSize:12,padding:'6px 10px',
+            border:`2px solid ${value?'#27ae60':'#ddd'}`,borderRadius:9,outline:'none',
+            background:value?'#eafaf1':'#fff',fontFamily:'Nunito,sans-serif'}}/>
+        {value&&!pf&&<img src={value} alt="" onError={()=>setPf(true)}
+          style={{height:38,width:56,objectFit:'cover',borderRadius:8,
+            border:'2px solid #e8e8e8',flexShrink:0}}/>}
+      </div>
+    </div>
+  );
+}
+
+function VidField({value,onChange,name}){
+  const ex=exVid(value);
+  const ok=ex.length===11;
+  const[tf,setTf]=useState(false);
+  useEffect(()=>setTf(false),[value]);
+  return(
+    <div style={{marginBottom:10}}>
+      <div style={{fontSize:11,fontWeight:800,color:'#555',marginBottom:4}}>📺 Vídeo YouTube</div>
+      <div style={{display:'flex',gap:7,alignItems:'center'}}>
+        <input value={value} onChange={e=>onChange(e.target.value)}
+          placeholder="Cole o link completo ou o ID (11 chars)"
+          style={{flex:1,fontSize:12,padding:'6px 10px',
+            border:`2px solid ${ok?'#27ae60':'#ddd'}`,borderRadius:9,outline:'none',
+            background:ok?'#eafaf1':'#fff',fontFamily:'Nunito,sans-serif'}}/>
+        <a href={ok?`https://youtube.com/watch?v=${ex}`:`https://youtube.com/results?search_query=${encodeURIComponent(name+' cultura')}`}
+          target="_blank" rel="noopener noreferrer"
+          style={{textDecoration:'none',fontSize:22,opacity:ok?1:.25,flexShrink:0}}>▶️</a>
+      </div>
+      {ok&&<div style={{fontSize:10,color:'#27ae60',fontWeight:700,marginTop:3}}>✅ ID: {ex}</div>}
+      {ok&&!tf&&<img src={`https://img.youtube.com/vi/${ex}/mqdefault.jpg`} alt="thumb"
+        onError={()=>setTf(true)} style={{width:'100%',borderRadius:10,marginTop:8}}/>}
+    </div>
+  );
+}
+
+function CDetail({c,m,onUpd,onBack}){
+  const d=m||{};
+  const u=(path,val)=>onUpd(c.name,path,val);
+  return(
+    <div style={{flex:1,overflowY:'auto',padding:'12px 16px 24px'}}>
+      <button onClick={onBack} style={{background:'none',border:'none',cursor:'pointer',
+        fontFamily:'Nunito,sans-serif',fontWeight:800,fontSize:13,color:'#1e6b3a',
+        padding:'4px 0',marginBottom:12,display:'flex',alignItems:'center',gap:6}}>
+        ← Voltar
+      </button>
+      <div style={{display:'flex',alignItems:'center',gap:10,padding:'10px 12px',
+        background:'#f4fff7',borderRadius:14,marginBottom:4,border:'2px solid #eafaf1'}}>
+        <img src={`https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/${tw(c.iso)}.svg`}
+          alt={c.name} style={{height:32,width:48,objectFit:'contain'}}
+          onError={e=>e.target.style.display='none'}/>
+        <div>
+          <div style={{fontFamily:"'Fredoka One',cursive",fontSize:17,color:'#1e6b3a'}}>{c.name}</div>
+          <div style={{fontSize:11,color:'#888',fontWeight:700}}>{CE[c.ct]} {c.ct}</div>
+        </div>
+      </div>
+      <SD c="📺 Vídeo do YouTube"/>
+      <VidField value={d.video||''} onChange={v=>u('video',v)} name={c.name}/>
+      <SD c="📸 Galeria de Imagens"/>
+      {IMG_FIELDS.map(f=>(
+        <ImgField key={f.key} icon={f.icon} label={f.label}
+          value={d.imgs?.[f.key]||''} onChange={v=>u(`imgs.${f.key}`,v)}/>
+      ))}
+      <SD c="📝 Imagem nas Seções"/>
+      {CATS.map(cat=>(
+        <ImgField key={cat.k} icon={cat.icon} label={cat.label}
+          value={d.secs?.[cat.k]||''} onChange={v=>u(`secs.${cat.k}`,v)}/>
+      ))}
+    </div>
+  );
+}
+
+function CList({allMedia,onSel,sq,setSq}){
+  const fl=COUNTRIES.filter(c=>c.name.toLowerCase().includes(sq.toLowerCase()));
+  return(
+    <>
+      <div style={{padding:'10px 16px 6px',flexShrink:0}}>
+        <input placeholder="🔍 Filtrar países…" value={sq} onChange={e=>setSq(e.target.value)}
+          style={{width:'100%',padding:'8px 13px',border:'2px solid #ddd',borderRadius:11,
+            fontSize:13,fontFamily:'Nunito,sans-serif',fontWeight:700,outline:'none'}}/>
+      </div>
+      <div style={{flex:1,overflowY:'auto',padding:'4px 12px 16px'}}>
+        {fl.map(c=>{
+          const mm=allMedia[c.name]||{};
+          const hv=exVid(mm.video||'').length===11;
+          const hi=Object.values(mm.imgs||{}).some(v=>v);
+          const hs=Object.values(mm.secs||{}).some(v=>v);
+          return(
+            <div key={c.name} onClick={()=>onSel(c)}
+              style={{display:'flex',alignItems:'center',gap:9,padding:'8px 10px',borderRadius:12,
+                cursor:'pointer',borderBottom:'1px solid #f0f0f0'}}
+              onMouseEnter={e=>e.currentTarget.style.background='#f4fff7'}
+              onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
+              <img src={`https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/${tw(c.iso)}.svg`}
+                alt={c.name} style={{height:24,width:36,objectFit:'contain',flexShrink:0}}
+                onError={e=>e.target.style.display='none'}/>
+              <span style={{flex:1,fontSize:13,fontWeight:800,color:'#333'}}>{c.name}</span>
+              <div style={{display:'flex',gap:3,fontSize:14}}>
+                {hv&&<span>🎬</span>}{hi&&<span>🖼️</span>}{hs&&<span>📝</span>}
+              </div>
+              <span style={{color:'#ccc',fontSize:16}}>›</span>
+            </div>
+          );
+        })}
+      </div>
+    </>
+  );
+}
+
+/* ── CSS ── */
+const CSS=`
+.hdr{background:linear-gradient(135deg,#0d5c2a,#27ae60);padding:18px 16px 20px;text-align:center;position:relative}
+.hdr::after{content:'';position:absolute;bottom:0;left:0;right:0;height:7px;background:repeating-linear-gradient(90deg,#ffd700 0,#ffd700 22px,#fff 22px,#fff 44px)}
+.htitle{font-family:'Fredoka One',cursive;font-size:26px;color:#ffd700;text-shadow:2px 3px 0 #0004}
+.hsub{color:rgba(255,255,255,.88);font-size:13px;font-weight:700;margin-top:5px}
+.body{padding:14px;max-width:720px;margin:0 auto}
+.tabs{display:flex;gap:5px;flex-wrap:wrap;margin:14px 0 10px}
+.tab{font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;padding:6px 13px;border-radius:999px;border:2.5px solid #ccc;background:#fff;color:#666;cursor:pointer;transition:all .15s}
+.tab:hover{border-color:#27ae60;color:#27ae60;transform:translateY(-2px)}
+.tab.on{background:#0d5c2a;color:#fff;border-color:#0d5c2a}
+.sbar{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.si{font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;padding:9px 14px;border:2.5px solid #ccc;border-radius:14px;outline:none;flex:1;min-width:130px;max-width:200px;background:#fff}
+.si:focus{border-color:#27ae60}
+.bdg{background:#eafaf1;border:2px solid #27ae60;color:#0d5c2a;font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px;white-space:nowrap}
+.btn-med{font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px;border:2px solid #a29bfe;background:#f0eeff;color:#5f27cd;cursor:pointer;white-space:nowrap;transition:all .15s}
+.btn-med:hover{background:#a29bfe;color:#fff}
+.panel{background:#fff;border-radius:22px;border:3px solid #ffd700;box-shadow:0 8px 28px #0003;margin-bottom:18px;overflow:hidden;animation:sd .25s ease}
+@keyframes sd{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.ph{padding:15px 16px;display:flex;align-items:center;gap:12px}
+.ptitle{font-family:'Fredoka One',cursive;font-size:22px;color:#fff;text-shadow:1px 2px 0 #0005}
+.pct{font-size:12px;font-weight:800;color:rgba(255,255,255,.85);margin-top:2px}
+.ib{background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.45);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:#fff;flex-shrink:0;transition:all .2s}
+.ib:hover{background:rgba(255,255,255,.35)}
+.pbody{padding:14px}
+.sl{font-family:'Fredoka One',cursive;font-size:14px;color:#1e6b3a;margin-bottom:7px;display:flex;align-items:center;gap:6px}
+.cats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cat{border-radius:16px;border:2.5px solid;padding:12px 14px}
+.cat.full{grid-column:1/-1}
+.ch{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.cl{font-family:'Fredoka One',cursive;font-size:14px}
+.ct{font-size:13px;line-height:1.7;color:#444}
+.spin{display:flex;flex-direction:column;align-items:center;padding:32px;gap:12px;color:#888;font-weight:800;font-size:14px}
+.ball{font-size:46px;animation:rot .7s linear infinite;display:inline-block}
+@keyframes rot{to{transform:rotate(360deg)}}
+.ebox{text-align:center;padding:22px;color:#e74c3c;font-weight:800}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:9px}
+.cc{background:#fff;border-radius:14px;border:2.5px solid #ddd;overflow:hidden;cursor:pointer;transition:all .2s}
+.cc:hover{transform:translateY(-4px) scale(1.05);box-shadow:0 8px 20px #0018}
+.cc.on{border-color:#ffd700!important;box-shadow:0 0 0 3px #ffd70055}
+.cname{font-size:10px;font-weight:800;color:#444;text-align:center;padding:5px 6px 7px;display:block;line-height:1.3}
+.nores{text-align:center;color:#bbb;font-size:14px;font-weight:800;margin-top:32px}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:999;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:#fff;border-radius:22px;width:100%;max-width:520px;max-height:90vh;display:flex;flex-direction:column;border:3px solid #ffd700;box-shadow:0 12px 40px #0005;overflow:hidden}
+.mhdr{background:linear-gradient(135deg,#0d5c2a,#27ae60);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.mtip{padding:9px 16px;background:#fffbea;border-bottom:1px solid #f0e060;font-size:12px;color:#7a6000;font-weight:700;line-height:1.6;flex-shrink:0}
+`;
+
+/* ── Main App ── */
+function MainApp({apiKey,onReset}){
+  const[tab,setTab]=useState("Todos");
+  const[q,setQ]=useState("");
+  const[sel,setSel]=useState(null);
+  const[info,setInfo]=useState(null);
+  const[wi,setWi]=useState({});
+  const[loading,setLoading]=useState(false);
+  const[err,setErr]=useState(false);
+  const[allMedia,setAllMedia]=useState(()=>JSON.parse(localStorage.getItem(MKEY)||'{}'));
+  const[showS,setShowS]=useState(false);
+  const[sv,setSv]=useState("list");
+  const[sc,setSc]=useState(null);
+  const[sq,setSq]=useState("");
+  const[rk,setRk]=useState(0);
+
+  const updM=(name,path,val)=>{
+    setAllMedia(prev=>{
+      const cur=prev[name]||{};
+      let next;
+      if(path.includes('.')){const[s,k]=path.split('.');next={...cur,[s]:{...(cur[s]||{}),[k]:val}};}
+      else next={...cur,[path]:val};
+      const up={...prev,[name]:next};
+      localStorage.setItem(MKEY,JSON.stringify(up));
+      return up;
+    });
+  };
+
+  const list=COUNTRIES.filter(c=>(tab==="Todos"||c.ct===tab)&&c.name.toLowerCase().includes(q.toLowerCase()));
+
+  const open=useCallback(async(c)=>{
+    setSel(c);setErr(false);
+    if(cache[c.name]){setInfo(cache[c.name].info);setWi(cache[c.name].imgs);setLoading(false);return;}
+    setInfo(null);setWi({});setLoading(true);
+    try{
+      const res=await fetch("https://api.anthropic.com/v1/messages",{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+          "x-api-key":apiKey,
+          "anthropic-version":"2023-06-01",
+          "anthropic-dangerous-direct-browser-access":"true"
+        },
+        body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1200,
+          messages:[{role:"user",content:
+            `Você é um professor criativo escrevendo um guia cultural sobre ${c.name} para crianças de 7 a 12 anos em uma escola tradicional. `+
+            `Use linguagem simples, animada, positiva e cheia de emojis. `+
+            `REGRAS OBRIGATÓRIAS: fale apenas de temas adequados para crianças pequenas em ambiente escolar. `+
+            `NUNCA mencione drogas, álcool, violência, guerras, conflitos políticos, pobreza, desigualdade, religião de forma polêmica ou qualquer tema adulto. `+
+            `Foque em comidas, música, esportes, natureza, animais, festas tradicionais, curiosidades divertidas e cultura familiar. `+
+            `Responda SOMENTE JSON puro sem markdown:\n`+
+            `{"linguas":"max 45 palavras","comidas":"max 45 palavras","musicas":"max 45 palavras","costumes":"max 45 palavras","curiosidade":"max 55 palavras",`+
+            `"wiki_country":"título Wikipedia inglês do país","wiki_landmark":"título Wikipedia inglês de monumento famoso",`+
+            `"wiki_food1":"título Wikipedia inglês do prato típico principal","wiki_food2":"título Wikipedia inglês de outro prato ou doce típico",`+
+            `"wiki_music":"título Wikipedia inglês do estilo musical principal",`+
+            `"youtube_video_id":"ID real de 11 chars de vídeo YouTube famoso sobre ${c.name}"}`
+          }]})
+      });
+      const d=await res.json();
+      const text=d.content.map(i=>i.text||'').join('').replace(/```json|```/g,'').trim();
+      const p=JSON.parse(text);
+      const[ic,il,if1,if2,im]=await Promise.all([
+        wikiImg(p.wiki_country),wikiImg(p.wiki_landmark),
+        wikiImg(p.wiki_food1),wikiImg(p.wiki_food2),wikiImg(p.wiki_music)
+      ]);
+      const imgs={country:ic,landmark:il,food1:if1,food2:if2,music:im};
+      cache[c.name]={info:p,imgs};
+      setInfo(p);setWi(imgs);
+    }catch{setErr(true);}finally{setLoading(false);}
+  },[apiKey]);
+
+  const close=()=>{setSel(null);setInfo(null);setWi({});};
+  const reload=(c)=>{delete cache[c.name];setInfo(null);setWi({});setRk(k=>k+1);open(c);};
+  const hc=CC[sel?.ct]||"#27ae60";
+  const mm=sel?(allMedia[sel.name]||{}):{};
+  const vid=mm.video?exVid(mm.video)||info?.youtube_video_id:info?.youtube_video_id;
+
+  return(
+    <div>
+      <style>{CSS}</style>
+      <div className="hdr">
+        <div style={{fontSize:18,letterSpacing:6,opacity:.5,marginBottom:5}}>⚽ 🏆 ⚽ 🏆 ⚽</div>
+        <div className="htitle">⚽ Copa do Mundo 2026 🌎</div>
+        <div className="hsub">Clique num país e descubra sua cultura!</div>
+      </div>
+      <div className="body">
+        <div className="tabs">
+          {CONTINENTS.map(t=>(
+            <button key={t} className={`tab${tab===t?" on":""}`} onClick={()=>setTab(t)}>{CE[t]} {t}</button>
+          ))}
+        </div>
+        <div className="sbar">
+          <input className="si" placeholder="🔍 Buscar país…" value={q} onChange={e=>setQ(e.target.value)}/>
+          <span className="bdg">⚽ {list.length} países</span>
+          <button className="btn-med" onClick={()=>{setShowS(true);setSv("list");}}>🎬 Editar Mídias</button>
+          <button onClick={onReset}
+            style={{background:'none',border:'none',cursor:'pointer',fontSize:11,
+              color:'#bbb',fontWeight:700,padding:'4px'}}>🔑</button>
+        </div>
+
+        {sel&&(
+          <div className="panel">
+            <div className="ph" style={{background:`linear-gradient(135deg,${hc},${hc}bb)`}}>
+              <span style={{fontSize:50,lineHeight:1,flexShrink:0}}>{sel.flag}</span>
+              <div style={{flex:1}}>
+                <div className="ptitle">{sel.name}</div>
+                <div className="pct">{CE[sel.ct]} {sel.ct}</div>
+              </div>
+              <button className="ib" style={{marginLeft:'auto'}} onClick={()=>reload(sel)}
+                title="Recarregar" onMouseEnter={e=>e.currentTarget.style.transform='rotate(180deg)'}
+                onMouseLeave={e=>e.currentTarget.style.transform=''}>🔄</button>
+              <button className="ib" style={{marginLeft:6}} onClick={close}>✕</button>
+            </div>
+            <div className="pbody" key={rk}>
+              {loading&&<div className="spin"><span className="ball">⚽</span>Carregando informações incríveis…</div>}
+              {err&&<div className="ebox">😅 Erro! <span style={{textDecoration:'underline',cursor:'pointer'}} onClick={()=>open(sel)}>Tentar de novo</span></div>}
+              {info&&!loading&&<>
+                <div className="sl">📸 Fotos do País</div>
+                <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginBottom:8}}>
+                  <MediaImg src={wi.country}  manualSrc={mm.imgs?.country}  label="🌍 O País"       ph={IMG_PH.country}  h={110}/>
+                  <MediaImg src={wi.landmark} manualSrc={mm.imgs?.landmark} label="🗼 Ponto Famoso" ph={IMG_PH.landmark} h={110}/>
+                </div>
+                <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:8,marginBottom:14}}>
+                  <MediaImg src={wi.food1} manualSrc={mm.imgs?.food1} label="🍽️ Comida 1" ph={IMG_PH.food1} h={85}/>
+                  <MediaImg src={wi.food2} manualSrc={mm.imgs?.food2} label="🍰 Comida 2" ph={IMG_PH.food2} h={85}/>
+                  <MediaImg src={wi.music} manualSrc={mm.imgs?.music} label="🎵 Música"   ph={IMG_PH.music} h={85}/>
+                </div>
+                <div className="sl">📺 Vídeo</div>
+                <div style={{marginBottom:14}}><VideoCard videoId={vid} name={sel.name}/></div>
+                <div className="sl">🌐 Saiba mais!</div>
+                <div className="cats">
+                  {CATS.map(cat=>(
+                    <div key={cat.k} className={`cat${cat.full?" full":""}`}
+                      style={{background:cat.bg,borderColor:cat.border}}>
+                      <div className="ch">
+                        <span style={{fontSize:18}}>{cat.icon}</span>
+                        <span className="cl" style={{color:cat.tc}}>{cat.label}</span>
+                      </div>
+                      <div className="ct">{info[cat.k]}</div>
+                      <SecImg url={mm.secs?.[cat.k]}/>
+                    </div>
+                  ))}
+                </div>
+              </>}
+            </div>
+          </div>
+        )}
+
+        <div className="grid">
+          {list.map(c=>(
+            <div key={c.name} className={`cc${sel?.name===c.name?" on":""}`}
+              style={{borderColor:sel?.name===c.name?"#ffd700":CC[c.ct]}} onClick={()=>open(c)}>
+              <FlagImg iso={c.iso} name={c.name} color={CC[c.ct]}/>
+              <span className="cname">{c.name}</span>
+            </div>
+          ))}
+        </div>
+        {list.length===0&&<div className="nores">😢 Nenhum país encontrado</div>}
+      </div>
+
+      {showS&&(
+        <div className="ov" onClick={e=>e.target===e.currentTarget&&setShowS(false)}>
+          <div className="modal">
+            <div className="mhdr">
+              <span style={{fontFamily:"'Fredoka One',cursive",fontSize:17,color:'#ffd700'}}>
+                {sv==="detail"?`✏️ ${sc?.name}`:"🎬 Editar Mídias"}
+              </span>
+              <button onClick={()=>setShowS(false)}
+                style={{background:'rgba(255,255,255,.2)',border:'2px solid rgba(255,255,255,.4)',
+                  borderRadius:'50%',width:32,height:32,color:'#fff',cursor:'pointer',fontSize:14,
+                  display:'flex',alignItems:'center',justifyContent:'center'}}>✕</button>
+            </div>
+            {sv==="list"&&(
+              <div className="mtip">
+                Toque num país para editar. 🎬 vídeo · 🖼️ imagens · 📝 seções<br/>
+                <strong>Imagens:</strong> URLs diretas (.jpg / .png) de Wikipedia, Imgur ou Unsplash.<br/>
+                <strong>YouTube:</strong> link completo ou ID de 11 caracteres.
+              </div>
+            )}
+            {sv==="list"
+              ?<CList allMedia={allMedia} onSel={c=>{setSc(c);setSv("detail");}} sq={sq} setSq={setSq}/>
+              :<CDetail c={sc} m={allMedia[sc?.name]} onUpd={updM} onBack={()=>setSv("list")}/>}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function App(){
+  const[key,setKey]=useState(()=>localStorage.getItem('copa-api-key')||'');
+  const save=k=>{localStorage.setItem('copa-api-key',k);setKey(k);};
+  const reset=()=>{localStorage.removeItem('copa-api-key');setKey('');};
+  if(!key)return<SetupScreen onReady={save}/>;
+  return<MainApp apiKey={key} onReset={reset}/>;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
