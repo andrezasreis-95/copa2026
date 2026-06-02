@@ -301,8 +301,6 @@ function CDetail({c,m,onUpd,onBack}){
           <div style={{fontSize:11,color:'#888',fontWeight:700}}>{CE[c.ct]} {c.ct}</div>
         </div>
       </div>
-      <SD c="📺 Vídeo do YouTube"/>
-      <VidField value={d.video||''} onChange={v=>u('video',v)} name={c.name}/>
       <SD c="📸 Galeria de Imagens"/>
       {IMG_FIELDS.map(f=>(
         <ImgField key={f.key} icon={f.icon} label={f.label}
@@ -444,17 +442,15 @@ function MainApp({apiKey,onReset}){
         },
         body:JSON.stringify({model:"claude-haiku-4-5-20251001",max_tokens:1200,
           messages:[{role:"user",content:
-            `Você é um professor criativo escrevendo um guia cultural sobre ${c.name} para crianças de 7 a 12 anos em uma escola tradicional. `+
-            `Use linguagem simples, animada, positiva e cheia de emojis. `+
-            `REGRAS OBRIGATÓRIAS: fale apenas de temas adequados para crianças pequenas em ambiente escolar. `+
-            `NUNCA mencione drogas, álcool, violência, guerras, conflitos políticos, pobreza, desigualdade, religião de forma polêmica ou qualquer tema adulto. `+
-            `Foque em comidas, música, esportes, natureza, animais, festas tradicionais, curiosidades divertidas e cultura familiar. `+
+            `Você é um professor que escreve guias culturais para crianças de 7 a 12 anos de uma escola tradicional. Escreva sobre ${c.name} de forma calorosa e natural, como um professor contando algo curioso para seus alunos. `+
+            `ESTILO: escreva como um ser humano, não como uma inteligência artificial. Use no máximo 1 emoji por seção. Não use travessão. Varie o início das frases. Use frases curtas e diretas. `+
+            `CONTEÚDO: seja totalmente específico sobre ${c.name}. Cada texto deve ser claramente sobre esse país e não poderia ser escrito sobre outro. Mencione nomes reais de pratos, músicas, lugares e tradições. Não generalize nem invente. `+
+            `PROIBIDO: drogas, álcool, violência, guerras, política, pobreza, temas adultos, e também generalizações como churrasco ou carnaval aplicados a países onde não são tradição genuína. `+
             `Responda SOMENTE JSON puro sem markdown:\n`+
-            `{"linguas":"max 45 palavras","comidas":"max 45 palavras","musicas":"max 45 palavras","costumes":"max 45 palavras","curiosidade":"max 55 palavras",`+
+            `{"linguas":"max 40 palavras, específico sobre as línguas de ${c.name}","comidas":"max 40 palavras, mencione pratos reais e típicos de ${c.name}","musicas":"max 40 palavras, estilos e instrumentos musicais reais de ${c.name}","costumes":"max 40 palavras, tradições únicas de ${c.name}","curiosidade":"max 50 palavras, fato único e surpreendente especificamente sobre ${c.name}",`+
             `"wiki_country":"título Wikipedia inglês do país","wiki_landmark":"título Wikipedia inglês de monumento famoso",`+
-            `"wiki_food1":"título Wikipedia inglês do prato típico principal","wiki_food2":"título Wikipedia inglês de outro prato ou doce típico",`+
-            `"wiki_music":"título Wikipedia inglês do estilo musical principal",`+
-            `"youtube_video_id":"ID real de 11 chars de vídeo YouTube famoso sobre ${c.name}"}`
+            `"wiki_food1":"título Wikipedia inglês do prato típico principal de ${c.name}","wiki_food2":"título Wikipedia inglês de outro prato típico de ${c.name}",`+
+            `"wiki_music":"título Wikipedia inglês do estilo musical principal de ${c.name}"}`
           }]})
       });
       const d=await res.json();
@@ -526,8 +522,6 @@ function MainApp({apiKey,onReset}){
                   <MediaImg src={wi.food2} manualSrc={mm.imgs?.food2} label="🍰 Comida 2" ph={IMG_PH.food2} h={85}/>
                   <MediaImg src={wi.music} manualSrc={mm.imgs?.music} label="🎵 Música"   ph={IMG_PH.music} h={85}/>
                 </div>
-                <div className="sl">📺 Vídeo</div>
-                <div style={{marginBottom:14}}><VideoCard videoId={vid} name={sel.name}/></div>
                 <div className="sl">🌐 Saiba mais!</div>
                 <div className="cats">
                   {CATS.map(cat=>(
