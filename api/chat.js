@@ -6,14 +6,12 @@ export default async function handler(req, res) {
 
   const key = process.env.ANTHROPIC_API_KEY;
 
-  // Diagnóstico: mostra se a chave existe e como começa
   if (!key) {
     return res.status(500).json({ erro: 'Chave não encontrada no servidor' });
   }
 
-  if (!key.startsWith('sk-ant-')) {
-    return res.status(500).json({ erro: 'Chave com formato inválido', inicio: key.slice(0, 8) });
-  }
+  // Garante que o modelo correto é usado
+  const body = { ...req.body, model: 'claude-opus-4-5' };
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -22,7 +20,7 @@ export default async function handler(req, res) {
       'x-api-key': key,
       'anthropic-version': '2023-06-01',
     },
-    body: JSON.stringify(req.body),
+    body: JSON.stringify(body),
   });
 
   const data = await response.json();
