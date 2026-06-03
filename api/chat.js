@@ -4,15 +4,15 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const key = process.env.ANTHROPIC_API_KEY;
-  if (!key) return res.status(500).json({ erro: 'Chave não encontrada' });
-
   try {
-    let body = req.body;
-    if (typeof body === 'string') body = JSON.parse(body);
-    if (!body) return res.status(400).json({ erro: 'Body vazio' });
+    const key = process.env.ANTHROPIC_API_KEY;
+    if (!key) return res.status(500).json({ erro: 'Chave não encontrada' });
 
-    body.model = 'claude-haiku-4-5-20251001';
+    const body = {
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1200,
+      messages: req.body?.messages || [],
+    };
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -25,9 +25,10 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
-    res.status(response.status).json(data);
+    return res.status(response.status).json(data);
   } catch (err) {
-    res.status(500).json({ erro: err.message });
+    console.error('Erro no handler:', err);
+    return res.status(500).json({ erro: String(err) });
   }
 }
 
